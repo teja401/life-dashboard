@@ -139,7 +139,7 @@ td{padding:9px 4px;border-bottom:1px solid var(--line)}
 .ev:last-child{border-bottom:none}
 .ev .tm{font-size:12px;font-weight:700;color:var(--pri);min-width:52px}
 .tabbar{position:fixed;bottom:0;left:0;right:0;background:var(--tile);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:20}
-.tb{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:700;color:var(--muted);cursor:pointer;border:none;background:none;padding:5px 13px;border-radius:14px}
+.tb{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:700;color:var(--muted);cursor:pointer;border:none;background:none;padding:5px 9px;border-radius:14px}
 .tb svg{width:22px;height:22px}
 .tb.on{color:var(--pri);background:var(--pri-soft)}
 #setup{position:fixed;inset:0;background:var(--bg);z-index:50;display:none;overflow-y:auto;padding:24px}
@@ -204,6 +204,11 @@ td{padding:9px 4px;border-bottom:1px solid var(--line)}
       <span class="lbl" style="color:var(--muted)">Projects</span>
       <div class="val" id="p-cnt" style="color:var(--pri)">0</div>
       <div class="mini" style="color:var(--muted)" id="p-mini"></div>
+    </div>
+    <div class="tile w2" style="background:var(--pri-soft)" onclick="nav('ideas')">
+      <span class="lbl" style="color:var(--pri-ink)">Ideas</span>
+      <div class="val" style="color:var(--pri)" id="i-cnt">0</div>
+      <div class="mini" style="color:var(--pri-ink)">trips · restaurants · home</div>
     </div>
   </div>
 
@@ -275,6 +280,25 @@ td{padding:9px 4px;border-bottom:1px solid var(--line)}
   </div>
 </div>
 
+<div class="view" id="v-ideas">
+  <h2 class="vt">Ideas</h2>
+  <div class="chips">
+    <span class="schip on" id="ic-trips" onclick="setIdeasKind('trips')">Trips</span>
+    <span class="schip" id="ic-rest" onclick="setIdeasKind('rest')">Restaurants</span>
+    <span class="schip" id="ic-homes" onclick="setIdeasKind('homes')">Home designs</span>
+  </div>
+  <div class="card">
+    <div class="row">
+      <input class="f" id="id-title" placeholder="Name or paste a link…" style="flex:1;min-width:130px">
+      <input class="f" id="id-link" placeholder="Link (optional)" style="flex:1;min-width:110px">
+      <input class="f" id="id-city" placeholder="City" style="width:110px;display:none">
+      <button class="btn" onclick="addIdea()">Save</button>
+    </div>
+    <p class="empty" style="text-align:left;padding:8px 2px 0" id="id-tip"></p>
+    <div id="id-list"></div>
+  </div>
+</div>
+
 <div class="view" id="v-money">
   <h2 class="vt">Money</h2>
   <div class="card">
@@ -304,6 +328,7 @@ td{padding:9px 4px;border-bottom:1px solid var(--line)}
   <button class="tb" data-v="shop" onclick="nav('shop')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="9" cy="20" r="1.6"/><circle cx="17" cy="20" r="1.6"/><path d="M3 4h2l2.6 12h10.8L21 8H6"/></svg>Shop</button>
   <button class="tb" data-v="cal" onclick="nav('cal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Calendar</button>
   <button class="tb" data-v="money" onclick="nav('money')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M15 9.5c0-1.4-1.3-2.5-3-2.5s-3 .9-3 2.2c0 3 6 1.6 6 4.6 0 1.3-1.3 2.2-3 2.2s-3-1.1-3-2.5"/></svg>Money</button>
+  <button class="tb" data-v="ideas" onclick="nav('ideas')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18h6M10 21h4"/><path d="M12 3a6.5 6.5 0 00-4 11.6c.8.7 1.3 1.5 1.5 2.4h5c.2-.9.7-1.7 1.5-2.4A6.5 6.5 0 0012 3z"/></svg>Ideas</button>
 </div>
 
 <div id="setup">
@@ -334,7 +359,7 @@ const firebaseConfig = {
 
 <script>
 const K='lifeDash.v1', KC='lifeDash.sync', KM='lifeDash.me';
-const BLANK={tasks:[],exp:[],budget:3000,proj:[],notes:[],shop:[],events:[],updatedAt:0};
+const BLANK={tasks:[],exp:[],budget:3000,proj:[],notes:[],shop:[],events:[],ideas:[],updatedAt:0};
 let S=load(), db=null, ref=null, unsub=null, applying=false;
 let me=localStorage.getItem(KM)||'';
 let shopFilter='All', calCur=new Date(), calSel=new Date().toISOString().slice(0,10);
@@ -459,6 +484,16 @@ function parseSmart(t){
   t=t.trim();if(!t)return null;
   const noteM=t.match(/^note[:\s]+(.+)/i);
   if(noteM)return{type:'note',text:noteM[1]};
+  if(/^https?:\/\/\S+$/i.test(t)){
+    const kind=/instagram\.com|tiktok|maps|tripadvisor|airbnb|booking\./i.test(t)?'trips':'trips';
+    return{type:'idea',kind,link:t};
+  }
+  const tripM=t.match(/^trip[:\s]+(.+)/i);
+  if(tripM)return{type:'idea',kind:'trips',title:tripM[1]};
+  const restM=t.match(/^(?:restaurant|rest)[:\s]+(.+)/i);
+  if(restM)return{type:'idea',kind:'rest',title:restM[1]};
+  const homeM=t.match(/^home[:\s]+(.+)/i);
+  if(homeM)return{type:'idea',kind:'homes',title:homeM[1]};
   const buyM=t.match(/^(?:buy|shopping[:\s])\s*(.+)/i);
   if(buyM){
     const store=guessStore(buyM[1]);
@@ -490,6 +525,7 @@ smartEl.addEventListener('input',()=>{
   if(!p){hh.innerHTML=HINT;return}
   if(p.type==='exp')hh.innerHTML='→ <b>Expense</b> · '+esc(p.cat)+' · '+fmt(p.amt)+(p.note?' · "'+esc(p.note)+'"':'');
   else if(p.type==='note')hh.innerHTML='→ <b>Note</b>';
+  else if(p.type==='idea')hh.innerHTML='→ <b>Ideas · '+{trips:'Trips',rest:'Restaurants',homes:'Home designs'}[p.kind]+'</b> · '+esc(p.title||p.link);
   else if(p.type==='shop')hh.innerHTML='→ <b>Shopping</b> · "'+esc(p.item)+'" · '+esc(p.store);
   else hh.innerHTML='→ <b>Task</b> · "'+esc(p.title)+'"'+(p.due?' · due '+p.due:'')+(p.pri==='hi'?' · high priority':'')+' · '+p.tag;
 });
@@ -498,6 +534,7 @@ function smartGo(){
   const p=parseSmart(smartEl.value);if(!p)return;
   if(p.type==='exp')S.exp.unshift({id:Date.now(),date:todayStr(),cat:p.cat,amt:p.amt,note:p.note,by:me});
   else if(p.type==='note')S.notes.unshift({id:Date.now(),text:p.text,date:todayStr(),by:me});
+  else if(p.type==='idea')S.ideas.unshift({id:Date.now(),kind:p.kind,title:p.title||domain(p.link||''),link:p.link||'',city:'',done:false,by:me});
   else if(p.type==='shop')S.shop.unshift({id:Date.now(),item:p.item,store:p.store,done:false,by:me});
   else S.tasks.unshift({id:Date.now(),title:p.title,tag:p.tag,pri:p.pri,due:p.due,done:false,by:me});
   smartEl.value='';el('hint').innerHTML='Added.';
@@ -522,6 +559,47 @@ function toggle(id){const t=S.tasks.find(t=>t.id===id);if(t){t.done=!t.done;save
 function delTask(id){S.tasks=S.tasks.filter(t=>t.id!==id);save()}
 function clearDone(){S.tasks=S.tasks.filter(t=>!t.done);save()}
 
+let ideasKind='trips';
+const IK={trips:{tip:'Places to go. Paste an Instagram or any link, or just type a name. Check off when you’ve been.',city:false},
+rest:{tip:'Restaurants to try, grouped by city. Check off once tried.',city:true},
+homes:{tip:'Home design ideas — paste links to posts, products, or inspiration.',city:false}};
+function setIdeasKind(k){ideasKind=k;render()}
+function isUrl(t){return /^https?:\/\/\S+$/i.test(t.trim())}
+function domain(u){try{return new URL(u).hostname.replace('www.','')}catch(e){return u}}
+function addIdea(){
+  const t=v('id-title').trim(),l=v('id-link').trim(),c=v('id-city').trim();
+  if(!t&&!l)return;
+  let title=t,link=l;
+  if(isUrl(t)&&!l){link=t;title=domain(t)}
+  S.ideas.unshift({id:Date.now(),kind:ideasKind,title:title||domain(link),link,city:c,done:false,by:me});
+  el('id-title').value='';el('id-link').value='';el('id-city').value='';save();
+}
+el('id-title').addEventListener('keydown',e=>{if(e.key==='Enter')addIdea()});
+function toggleIdea(id){const i=S.ideas.find(i=>i.id===id);if(i){i.done=!i.done;save()}}
+function delIdea(id){S.ideas=S.ideas.filter(i=>i.id!==id);save()}
+function ideaLi(i){
+  return `<li class="${i.done?'done':''}"><span class="ck" onclick="toggleIdea(${i.id})">✓</span>
+  <span class="ttl">${esc(i.title)}${i.by?` <span class="by">· ${esc(i.by)}</span>`:''}</span>
+  ${i.link?`<a href="${esc(i.link)}" target="_blank" rel="noopener" style="font-size:12px;font-weight:700;color:var(--pri);text-decoration:none">open ↗</a>`:''}
+  <button class="ghost" onclick="delIdea(${i.id})">✕</button></li>`;
+}
+function renderIdeas(){
+  ['trips','rest','homes'].forEach(k=>el('ic-'+k).className='schip'+(ideasKind===k?' on':''));
+  el('id-city').style.display=IK[ideasKind].city?'':'none';
+  el('id-tip').textContent=IK[ideasKind].tip;
+  const items=S.ideas.filter(i=>i.kind===ideasKind);
+  if(ideasKind==='rest'){
+    const cities=[...new Set(items.map(i=>i.city||'Anywhere'))];
+    el('id-list').innerHTML=cities.map(c=>{
+      const ci=items.filter(i=>(i.city||'Anywhere')===c).sort((a,b)=>a.done-b.done);
+      return `<div class="store-h" style="color:var(--peach-val)">${esc(c)} <span class="n">${ci.filter(i=>!i.done).length}</span></div>
+      <ul class="list">${ci.map(ideaLi).join('')}</ul>`;
+    }).join('')||'<div class="empty">No restaurants saved yet.</div>';
+  }else{
+    el('id-list').innerHTML=items.length?`<ul class="list">${[...items].sort((a,b)=>a.done-b.done).map(ideaLi).join('')}</ul>`:'<div class="empty">Nothing saved yet.</div>';
+  }
+  el('i-cnt').textContent=S.ideas.filter(i=>!i.done).length;
+}
 const STORES=['Indian','Costco','Whole Foods','Other'];
 function addShop(){
   const t=el('sh-item');if(!t.value.trim())return;
@@ -698,6 +776,7 @@ function render(){
   el('n-list').innerHTML=S.notes.map(n=>
     `<div class="note">${esc(n.text)}<div class="d">${n.date}${n.by?' · '+esc(n.by):''}</div><button class="ghost" onclick="delNote(${n.id})">✕</button></div>`).join('')||'<div class="empty">No notes yet.</div>';
 
+  renderIdeas();
   if(el('v-cal').classList.contains('active'))renderCal();
   if(el('v-money').classList.contains('active'))drawChart();
 }
