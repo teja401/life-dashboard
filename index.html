@@ -84,8 +84,8 @@ button.btn{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;
 button.ghost{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:4px}
 button.ghost:hover{color:var(--red)}
 ul.list{list-style:none}
-ul.list li{display:flex;align-items:center;gap:10px;padding:11px 2px;border-bottom:1px solid var(--line);font-size:14px}
-ul.list li:last-child{border-bottom:none}
+ul.list li{display:flex;align-items:center;gap:10px;padding:12px 36px 12px 12px;font-size:14px;background:var(--bg);border:1px solid var(--line);border-radius:14px;margin-bottom:8px;position:relative}
+ul.list li .ghost{position:absolute;top:7px;right:7px;font-size:13px;opacity:.55}
 .ck{width:22px;height:22px;border:2.5px solid var(--pri);border-radius:50%;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;color:transparent;transition:all .15s}
 .done .ck{background:var(--green);border-color:var(--green);color:#fff}
 .done .ttl{text-decoration:line-through;color:var(--muted)}
@@ -135,8 +135,8 @@ td{padding:9px 4px;border-bottom:1px solid var(--line)}
 .cal .day.sel{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff}
 .cal .dots{display:flex;gap:2px;margin-top:2px;height:5px}
 .cal .dots i{width:5px;height:5px;border-radius:50%;display:block}
-.ev{display:flex;align-items:center;gap:10px;padding:10px 2px;border-bottom:1px solid var(--line);font-size:14px}
-.ev:last-child{border-bottom:none}
+.ev{display:flex;align-items:center;gap:10px;padding:12px 36px 12px 12px;font-size:14px;background:var(--bg);border:1px solid var(--line);border-radius:14px;margin-bottom:8px;position:relative}
+.ev .ghost{position:absolute;top:7px;right:7px;font-size:13px;opacity:.55}
 .ev .tm{font-size:12px;font-weight:700;color:var(--pri);min-width:52px}
 .tabbar{position:fixed;bottom:0;left:0;right:0;background:var(--tile);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:20}
 .tb{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:700;color:var(--muted);cursor:pointer;border:none;background:none;padding:5px 9px;border-radius:14px}
@@ -208,7 +208,7 @@ td{padding:9px 4px;border-bottom:1px solid var(--line)}
     <div class="tile w2" style="background:var(--pri-soft)" onclick="nav('ideas')">
       <span class="lbl" style="color:var(--pri-ink)">Ideas</span>
       <div class="val" style="color:var(--pri)" id="i-cnt">0</div>
-      <div class="mini" style="color:var(--pri-ink)">trips · restaurants · home</div>
+      <div class="mini" style="color:var(--pri-ink)">trips · food · home · recipes</div>
     </div>
   </div>
 
@@ -286,6 +286,7 @@ td{padding:9px 4px;border-bottom:1px solid var(--line)}
     <span class="schip on" id="ic-trips" onclick="setIdeasKind('trips')">Trips</span>
     <span class="schip" id="ic-rest" onclick="setIdeasKind('rest')">Restaurants</span>
     <span class="schip" id="ic-homes" onclick="setIdeasKind('homes')">Home designs</span>
+    <span class="schip" id="ic-recipes" onclick="setIdeasKind('recipes')">Recipes</span>
   </div>
   <div class="card">
     <div class="row">
@@ -494,6 +495,8 @@ function parseSmart(t){
   if(restM)return{type:'idea',kind:'rest',title:restM[1]};
   const homeM=t.match(/^home[:\s]+(.+)/i);
   if(homeM)return{type:'idea',kind:'homes',title:homeM[1]};
+  const recM=t.match(/^recipes?[:\s]+(.+)/i);
+  if(recM)return{type:'idea',kind:'recipes',title:recM[1]};
   const buyM=t.match(/^(?:buy|shopping[:\s])\s*(.+)/i);
   if(buyM){
     const store=guessStore(buyM[1]);
@@ -525,7 +528,7 @@ smartEl.addEventListener('input',()=>{
   if(!p){hh.innerHTML=HINT;return}
   if(p.type==='exp')hh.innerHTML='→ <b>Expense</b> · '+esc(p.cat)+' · '+fmt(p.amt)+(p.note?' · "'+esc(p.note)+'"':'');
   else if(p.type==='note')hh.innerHTML='→ <b>Note</b>';
-  else if(p.type==='idea')hh.innerHTML='→ <b>Ideas · '+{trips:'Trips',rest:'Restaurants',homes:'Home designs'}[p.kind]+'</b> · '+esc(p.title||p.link);
+  else if(p.type==='idea')hh.innerHTML='→ <b>Ideas · '+{trips:'Trips',rest:'Restaurants',homes:'Home designs',recipes:'Recipes'}[p.kind]+'</b> · '+esc(p.title||p.link);
   else if(p.type==='shop')hh.innerHTML='→ <b>Shopping</b> · "'+esc(p.item)+'" · '+esc(p.store);
   else hh.innerHTML='→ <b>Task</b> · "'+esc(p.title)+'"'+(p.due?' · due '+p.due:'')+(p.pri==='hi'?' · high priority':'')+' · '+p.tag;
 });
@@ -562,7 +565,8 @@ function clearDone(){S.tasks=S.tasks.filter(t=>!t.done);save()}
 let ideasKind='trips';
 const IK={trips:{tip:'Places to go. Paste an Instagram or any link, or just type a name. Check off when you’ve been.',city:false},
 rest:{tip:'Restaurants to try, grouped by city. Check off once tried.',city:true},
-homes:{tip:'Home design ideas — paste links to posts, products, or inspiration.',city:false}};
+homes:{tip:'Home design ideas — paste links to posts, products, or inspiration.',city:false},
+recipes:{tip:'Recipes to try — paste links from Instagram or YouTube, or type a dish. Tap a name to rename it.',city:false}};
 function setIdeasKind(k){ideasKind=k;render()}
 function isUrl(t){return /^https?:\/\/\S+$/i.test(t.trim())}
 function domain(u){try{return new URL(u).hostname.replace('www.','')}catch(e){return u}}
@@ -577,14 +581,19 @@ function addIdea(){
 el('id-title').addEventListener('keydown',e=>{if(e.key==='Enter')addIdea()});
 function toggleIdea(id){const i=S.ideas.find(i=>i.id===id);if(i){i.done=!i.done;save()}}
 function delIdea(id){S.ideas=S.ideas.filter(i=>i.id!==id);save()}
+function renameIdea(id){
+  const i=S.ideas.find(i=>i.id===id);if(!i)return;
+  const n=prompt('Name this:',i.title);
+  if(n&&n.trim()){i.title=n.trim();save()}
+}
 function ideaLi(i){
   return `<li class="${i.done?'done':''}"><span class="ck" onclick="toggleIdea(${i.id})">✓</span>
-  <span class="ttl">${esc(i.title)}${i.by?` <span class="by">· ${esc(i.by)}</span>`:''}</span>
+  <span class="ttl" style="cursor:pointer" title="Tap to rename" onclick="renameIdea(${i.id})">${esc(i.title)}${i.by?` <span class="by">· ${esc(i.by)}</span>`:''}</span>
   ${i.link?`<a href="${esc(i.link)}" target="_blank" rel="noopener" style="font-size:12px;font-weight:700;color:var(--pri);text-decoration:none">open ↗</a>`:''}
   <button class="ghost" onclick="delIdea(${i.id})">✕</button></li>`;
 }
 function renderIdeas(){
-  ['trips','rest','homes'].forEach(k=>el('ic-'+k).className='schip'+(ideasKind===k?' on':''));
+  ['trips','rest','homes','recipes'].forEach(k=>el('ic-'+k).className='schip'+(ideasKind===k?' on':''));
   el('id-city').style.display=IK[ideasKind].city?'':'none';
   el('id-tip').textContent=IK[ideasKind].tip;
   const items=S.ideas.filter(i=>i.kind===ideasKind);
