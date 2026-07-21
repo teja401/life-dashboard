@@ -12,52 +12,66 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{color-scheme:light dark;
-  --bg:#F4F2FB; --tile:#ffffff; --ink:#1C1633; --muted:#6E6A85; --line:#E6E3F0;
-  --pri:#6D5AE6; --pri2:#9B5CF6; --pri-soft:#EDEAFD; --pri-ink:#4534B8;
-  --mint:#DEF7EC; --mint-ink:#046C4E; --mint-val:#0E9F6E;
-  --peach:#FFEDE3; --peach-ink:#9A3B0F; --peach-val:#E8590C;
-  --sky:#E0F1FF; --sky-ink:#0B5394; --sky-val:#1C7ED6;
-  --lemon:#FFF6DB; --lemon-ink:#8A6100; --lemon-val:#E8A305;
-  --rose:#FFE7F0; --rose-ink:#9F1259; --rose-val:#E64980;
-  --green:#0E9F6E; --red:#E02424; --red-soft:#FDE8E8; --amber:#C27803;
+  --font-head:'Quicksand',-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-body:'Nunito Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  --h-pri:275; --h-terra:35; --h-sage:150; --h-amber:90;
+  --bg:oklch(0.97 0.015 70); --tile:oklch(0.995 0.006 70);
+  --ink:oklch(0.28 0.02 70); --muted:oklch(0.55 0.02 70); --line:oklch(0.9 0.01 70);
+  --pri:oklch(0.55 0.16 var(--h-pri)); --pri2:oklch(0.55 0.16 var(--h-pri));
+  --pri-soft:oklch(0.94 0.04 var(--h-pri)); --pri-ink:oklch(0.42 0.14 var(--h-pri));
+  --mint:oklch(0.94 0.045 var(--h-sage)); --mint-ink:oklch(0.42 0.11 var(--h-sage)); --mint-val:oklch(0.55 0.13 var(--h-sage));
+  --peach:oklch(0.94 0.045 var(--h-terra)); --peach-ink:oklch(0.44 0.12 var(--h-terra)); --peach-val:oklch(0.57 0.15 var(--h-terra));
+  --sky:oklch(0.94 0.04 var(--h-pri)); --sky-ink:oklch(0.42 0.14 var(--h-pri)); --sky-val:oklch(0.55 0.16 var(--h-pri));
+  --lemon:oklch(0.94 0.05 var(--h-amber)); --lemon-ink:oklch(0.44 0.11 var(--h-amber)); --lemon-val:oklch(0.6 0.14 var(--h-amber));
+  --rose:oklch(0.94 0.045 var(--h-terra)); --rose-ink:oklch(0.44 0.12 var(--h-terra)); --rose-val:oklch(0.57 0.15 var(--h-terra));
+  --green:oklch(0.55 0.13 var(--h-sage)); --amber:oklch(0.6 0.14 var(--h-amber));
+  --red:oklch(0.6 0.18 25); --red-soft:oklch(0.94 0.05 25);
 }
 @media (prefers-color-scheme:dark){:root{
-  --bg:#17141F; --tile:#221E30; --ink:#F0EDF8; --muted:#9C97B3; --line:#332E47;
-  --pri:#8B7BF0; --pri2:#A78BFA; --pri-soft:#2B2450; --pri-ink:#C7BEF8;
-  --mint:#0E3328; --mint-ink:#7EE2C0; --mint-val:#4FD1A5;
-  --peach:#3D2416; --peach-ink:#FFB68A; --peach-val:#FF8A4C;
-  --sky:#122C44; --sky-ink:#8CC8FF; --sky-val:#4DABF7;
-  --lemon:#332A0E; --lemon-ink:#F7D774; --lemon-val:#FACC15;
-  --rose:#3B1526; --rose-ink:#FBA7C9; --rose-val:#F783AC;
-  --green:#4FD1A5; --red:#F98080; --red-soft:#43201D; --amber:#E3A008;
+  --bg:oklch(0.22 0.012 70); --tile:oklch(0.27 0.014 70);
+  --ink:oklch(0.94 0.012 70); --muted:oklch(0.68 0.015 70); --line:oklch(0.36 0.014 70);
+  --pri:oklch(0.72 0.13 var(--h-pri)); --pri2:oklch(0.72 0.13 var(--h-pri));
+  --pri-soft:oklch(0.34 0.06 var(--h-pri)); --pri-ink:oklch(0.85 0.08 var(--h-pri));
+  --mint:oklch(0.33 0.05 var(--h-sage)); --mint-ink:oklch(0.85 0.09 var(--h-sage)); --mint-val:oklch(0.75 0.12 var(--h-sage));
+  --peach:oklch(0.33 0.05 var(--h-terra)); --peach-ink:oklch(0.85 0.09 var(--h-terra)); --peach-val:oklch(0.75 0.13 var(--h-terra));
+  --sky:oklch(0.33 0.05 var(--h-pri)); --sky-ink:oklch(0.85 0.08 var(--h-pri)); --sky-val:oklch(0.75 0.12 var(--h-pri));
+  --lemon:oklch(0.33 0.05 var(--h-amber)); --lemon-ink:oklch(0.87 0.1 var(--h-amber)); --lemon-val:oklch(0.78 0.13 var(--h-amber));
+  --rose:oklch(0.33 0.05 var(--h-terra)); --rose-ink:oklch(0.85 0.09 var(--h-terra)); --rose-val:oklch(0.75 0.13 var(--h-terra));
+  --green:oklch(0.75 0.12 var(--h-sage)); --amber:oklch(0.78 0.13 var(--h-amber));
+  --red:oklch(0.72 0.14 25); --red-soft:oklch(0.33 0.06 25);
 }}
-*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box;margin:0;padding:0;font-family:var(--font-body);-webkit-tap-highlight-color:transparent}
+h1,h2,h3,.val,.nxt,.tb,.tile .lbl{font-family:var(--font-head)}
 body{background:var(--bg);color:var(--ink);min-height:100vh}
+.av{width:20px;height:20px;border-radius:50%;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:10px;font-weight:700;color:#fff;vertical-align:-4px}
 .wrap{max-width:860px;margin:0 auto;padding:18px 16px calc(92px + env(safe-area-inset-bottom))}
 .top{display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .hi{flex:1}
-.hi h1{font-size:22px;font-weight:800;background:linear-gradient(90deg,var(--pri),var(--pri2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.hi p{font-size:12.5px;color:var(--muted);margin-top:2px}
+.hi h1{font-size:23px;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+.hi p{font-size:12.5px;color:var(--muted);margin-top:3px}
 .chip{font-size:11px;font-weight:700;border-radius:12px;padding:5px 12px;white-space:nowrap;cursor:pointer;border:none}
 .chip.sync-on{background:var(--mint);color:var(--mint-ink)}
 .chip.sync-off{background:var(--line);color:var(--muted)}
 .chip.sync-err{background:var(--red-soft);color:var(--red)}
-.smart{display:flex;gap:8px;align-items:center;background:var(--tile);border:2px solid transparent;border-radius:18px;padding:6px 6px 6px 16px;margin-bottom:8px;box-shadow:0 2px 10px rgba(109,90,230,.08)}
+.smart{display:flex;gap:8px;align-items:center;background:var(--tile);border:1px solid var(--line);border-radius:18px;padding:6px 6px 6px 16px;margin-bottom:8px}
 .smart:focus-within{border-color:var(--pri)}
 .smart input{flex:1;border:none;background:transparent;font-size:16px;color:var(--ink);padding:10px 0;min-width:0}
 .smart input:focus{outline:none}
-.smart button{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;border:none;border-radius:13px;padding:11px 18px;font-size:14px;font-weight:700;cursor:pointer}
+.smart button{background:var(--pri);color:#fff;border:none;border-radius:13px;padding:11px 18px;font-size:14px;font-weight:700;font-family:var(--font-head);cursor:pointer}
 .hint{font-size:12px;color:var(--muted);margin:0 4px 14px;min-height:17px}
 .hint b{font-weight:700;color:var(--pri)}
-.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:92px;gap:10px}
-.tile{border-radius:18px;padding:13px 15px;cursor:pointer;overflow:hidden;display:flex;flex-direction:column;background:var(--tile);transition:transform .1s}
-.tile:active{transform:scale(.97)}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:96px;gap:12px}
+.tile{border-radius:18px;padding:14px 16px;cursor:pointer;overflow:hidden;display:flex;flex-direction:column;background:var(--tile);border:1px solid var(--line);transition:transform .1s}
+.tile:active{transform:scale(.98)}
 .tile .lbl{font-size:11.5px;font-weight:700}
-.tile .val{font-size:22px;font-weight:800;margin-top:3px}
+.tile .val{font-size:23px;font-weight:700;margin-top:4px;letter-spacing:-.01em}
 .tile .mini{font-size:11.5px;margin-top:auto;opacity:.85}
-.hero{grid-column:span 2;grid-row:span 2;background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff}
+.hero{grid-column:span 2;grid-row:span 2;background:var(--pri);border-color:var(--pri);color:#fff}
 .hero .lbl{color:rgba(255,255,255,.75)}
 .hero .nxt{font-size:17px;font-weight:700;line-height:1.35;margin-top:8px}
 .hero .tag{margin-top:auto;background:rgba(255,255,255,.22);color:#fff;font-size:11.5px;font-weight:700;border-radius:11px;padding:4px 12px;width:fit-content}
@@ -74,13 +88,13 @@ body{background:var(--bg);color:var(--ink);min-height:100vh}
 .strip p{flex:1;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .view{display:none}
 .view.active{display:block}
-h2.vt{font-size:19px;font-weight:800;margin-bottom:12px}
-.card{background:var(--tile);border-radius:18px;padding:16px;margin-bottom:12px}
+h2.vt{font-size:20px;font-weight:700;margin-bottom:14px;letter-spacing:-.01em}
+.card{background:var(--tile);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:14px}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 input.f,select.f,textarea.f{border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font-size:16px;background:var(--bg);color:var(--ink)}
 @media(min-width:640px){input.f,select.f,textarea.f{font-size:13px}}
 input.f:focus,select.f:focus,textarea.f:focus{outline:none;border-color:var(--pri)}
-button.btn{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;border:none;border-radius:12px;padding:10px 17px;font-size:13px;font-weight:700;cursor:pointer}
+button.btn{background:var(--pri);color:#fff;border:none;border-radius:12px;padding:10px 17px;font-size:13px;font-weight:700;font-family:var(--font-head);cursor:pointer}
 button.ghost{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:4px}
 button.ghost:hover{color:var(--red)}
 ul.list{list-style:none}
@@ -120,7 +134,7 @@ td{padding:9px 4px;border-bottom:1px solid var(--line)}
 .chartwrap{display:flex;gap:16px;align-items:center;margin-top:8px;flex-wrap:wrap}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
 .schip{font-size:12.5px;font-weight:700;border-radius:14px;padding:7px 14px;background:var(--tile);color:var(--muted);cursor:pointer;border:1.5px solid var(--line)}
-.schip.on{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;border-color:transparent}
+.schip.on{background:var(--pri);color:#fff;border-color:var(--pri)}
 .store-h{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin:14px 0 2px;display:flex;align-items:center;gap:6px}
 .store-h .n{font-size:11px;font-weight:700;background:var(--line);color:var(--muted);border-radius:9px;padding:1px 7px}
 .s-Indian{color:var(--peach-val)} .s-Costco{color:var(--sky-val)} .s-WholeFoods{color:var(--mint-val)} .s-Other{color:var(--muted)}
@@ -142,18 +156,18 @@ td{padding:9px 4px;border-bottom:1px solid var(--line)}
 .cal-head button{background:var(--tile);border:1.5px solid var(--line);border-radius:10px;width:34px;height:34px;font-size:15px;color:var(--ink);cursor:pointer}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
 .cal .dow{font-size:10.5px;font-weight:700;color:var(--muted);text-align:center;padding:4px 0}
-.cal .day{aspect-ratio:1;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;cursor:pointer;background:var(--tile);position:relative}
+.cal .day{aspect-ratio:1;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;cursor:pointer;background:var(--tile);border:1px solid var(--line);position:relative}
 .cal .day.dim{opacity:.35}
 .cal .day.today{border:2px solid var(--pri)}
-.cal .day.sel{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff}
+.cal .day.sel{background:var(--pri);border-color:var(--pri);color:#fff}
 .cal .dots{display:flex;gap:2px;margin-top:2px;height:5px}
 .cal .dots i{width:5px;height:5px;border-radius:50%;display:block}
 .ev{display:flex;align-items:center;gap:10px;padding:12px 36px 12px 12px;font-size:14px;background:var(--bg);border:1px solid var(--line);border-radius:14px;margin-bottom:8px;position:relative}
 .ev .ghost{position:absolute;top:7px;right:7px;font-size:13px;opacity:.55}
 .ev .tm{font-size:12px;font-weight:700;color:var(--pri);min-width:52px}
 .tabbar{position:fixed;bottom:0;left:0;right:0;background:var(--tile);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:20}
-.tb{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:700;color:var(--muted);cursor:pointer;border:none;background:none;padding:5px 9px;border-radius:14px}
-.tb svg{width:22px;height:22px}
+.tb{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;font-weight:700;color:var(--muted);cursor:pointer;border:none;background:none;padding:6px 10px;border-radius:14px}
+.tb i{font-style:normal;font-size:17px;line-height:1.1}
 .tb.on{color:var(--pri);background:var(--pri-soft)}
 #setup{position:fixed;inset:0;background:var(--bg);z-index:50;display:none;overflow-y:auto;padding:24px}
 #setup.show{display:block}
@@ -278,7 +292,7 @@ td{padding:9px 4px;border-bottom:1px solid var(--line)}
   <h2 class="vt">Calendar</h2>
   <div class="card">
     <div class="cal-head">
-      <button onclick="calMove(-1)">‹</button><b id="cal-title"></b><button onclick="calMove(1)">›</button>
+      <button onclick="calMove(-1)" aria-label="Previous month">‹</button><b id="cal-title"></b><button onclick="calMove(1)" aria-label="Next month">›</button>
     </div>
     <div class="cal" id="cal-grid"></div>
   </div>
@@ -337,12 +351,12 @@ td{padding:9px 4px;border-bottom:1px solid var(--line)}
 </div>
 
 <div class="tabbar">
-  <button class="tb on" data-v="home" onclick="nav('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Home</button>
-  <button class="tb" data-v="tasks" onclick="nav('tasks')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 12l3 3 5-6"/></svg>Tasks</button>
-  <button class="tb" data-v="shop" onclick="nav('shop')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="9" cy="20" r="1.6"/><circle cx="17" cy="20" r="1.6"/><path d="M3 4h2l2.6 12h10.8L21 8H6"/></svg>Shop</button>
-  <button class="tb" data-v="cal" onclick="nav('cal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Calendar</button>
-  <button class="tb" data-v="money" onclick="nav('money')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M15 9.5c0-1.4-1.3-2.5-3-2.5s-3 .9-3 2.2c0 3 6 1.6 6 4.6 0 1.3-1.3 2.2-3 2.2s-3-1.1-3-2.5"/></svg>Money</button>
-  <button class="tb" data-v="ideas" onclick="nav('ideas')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18h6M10 21h4"/><path d="M12 3a6.5 6.5 0 00-4 11.6c.8.7 1.3 1.5 1.5 2.4h5c.2-.9.7-1.7 1.5-2.4A6.5 6.5 0 0012 3z"/></svg>Ideas</button>
+  <button class="tb on" data-v="home" onclick="nav('home')"><i>⌂</i>Home</button>
+  <button class="tb" data-v="tasks" onclick="nav('tasks')"><i>✓</i>Tasks</button>
+  <button class="tb" data-v="shop" onclick="nav('shop')"><i>≡</i>Shop</button>
+  <button class="tb" data-v="cal" onclick="nav('cal')"><i>▦</i>Calendar</button>
+  <button class="tb" data-v="money" onclick="nav('money')"><i>$</i>Money</button>
+  <button class="tb" data-v="ideas" onclick="nav('ideas')"><i>♥</i>Ideas</button>
 </div>
 
 <div id="setup">
@@ -383,6 +397,17 @@ function save(){S.updatedAt=Date.now();persistLocal();render();push()}
 const fmt=n=>'$'+Number(n||0).toLocaleString('en-US');
 const todayStr=()=>new Date().toISOString().slice(0,10);
 const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const HUES=[275,35,150,90];
+function hueFor(name){
+  const s=String(name||'');let h=0;
+  for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;
+  return HUES[h%HUES.length];
+}
+function memberColor(name){return `oklch(0.55 0.16 ${hueFor(name)})`}
+function avatar(name){
+  if(!name)return'';
+  return `<span class="av" style="background:${memberColor(name)}" title="${esc(name)}">${esc(name.trim()[0].toUpperCase())}</span>`;
+}
 function v(id){return document.getElementById(id).value}
 function el(id){return document.getElementById(id)}
 const h=new Date().getHours();
@@ -602,9 +627,9 @@ function renameIdea(id){
 function ideaLi(i){
   const cls={trips:'ik-trips',rest:'ik-rest',homes:'ik-homes',recipes:'ik-recipes'}[i.kind]||'ik-trips';
   return `<div class="itile ${cls}${i.done?' done':''}">
-  <button class="x" onclick="delIdea(${i.id})">✕</button>
+  <button class="x" onclick="delIdea(${i.id})">×</button>
   <span class="t" title="Tap to rename" onclick="renameIdea(${i.id})">${esc(i.title)}</span>
-  ${i.by?`<span class="b">${esc(i.by)}</span>`:''}
+  ${i.by?`<span class="b">${avatar(i.by)} ${esc(i.by)}</span>`:''}
   <div class="bot"><span class="ck" onclick="toggleIdea(${i.id})">✓</span>
   ${i.link?`<a href="${esc(i.link)}" target="_blank" rel="noopener">open ↗</a>`:''}</div></div>`;
 }
@@ -670,8 +695,8 @@ function renderCal(){
   const items=dayItems(calSel);
   el('day-list').innerHTML=items.map(i=>
     `<div class="ev"><span class="tm">${i.time?esc(i.time):(i.kind==='task'?'task':'all day')}</span>
-    <span class="ttl">${esc(i.txt)}${i.by?` <span class="by">· ${esc(i.by)}</span>`:''}</span>
-    ${i.kind==='event'?`<button class="ghost" onclick="delEvent(${i.id})">✕</button>`:`<span class="ck" onclick="toggle(${i.id})">✓</span>`}</div>`).join('')
+    <span class="ttl">${esc(i.txt)} ${avatar(i.by)}</span>
+    ${i.kind==='event'?`<button class="ghost" onclick="delEvent(${i.id})">×</button>`:`<span class="ck" onclick="toggle(${i.id})">✓</span>`}</div>`).join('')
     ||'<div class="empty">Nothing on this day.</div>';
 }
 
@@ -700,7 +725,7 @@ function addNote(){
 }
 function delNote(id){S.notes=S.notes.filter(n=>n.id!==id);save()}
 
-const COLORS=['#6D5AE6','#0E9F6E','#E8590C','#E64980','#1C7ED6','#E8A305','#12B886','#868E96'];
+const COLORS=[275,35,150,90,310,60,200,20].map((h,i)=>`oklch(${i<4?0.55:0.66} ${i<4?0.16:0.12} ${h})`);
 function drawChart(){
   const byCat={};monthExp().forEach(e=>byCat[e.cat]=(byCat[e.cat]||0)+e.amt);
   const cats=Object.keys(byCat),total=Object.values(byCat).reduce((a,b)=>a+b,0);
@@ -725,11 +750,11 @@ function taskLi(t){
   const over=t.due&&!t.done&&t.due<todayStr();
   return `<li class="${t.done?'done':''}">
     <span class="ck" onclick="toggle(${t.id})">✓</span>
-    <span class="ttl">${esc(t.title)}${t.by?` <span class="by">· ${esc(t.by)}</span>`:''}</span>
+    <span class="ttl">${esc(t.title)} ${avatar(t.by)}</span>
     ${t.pri==='hi'?'<span class="pill hi">High</span>':''}
     <span class="pill ${t.tag==='Work'?'work':'personal'}">${t.tag}</span>
     ${t.due?`<span class="due ${over?'over':''}">${t.due}</span>`:''}
-    <button class="ghost" onclick="delTask(${t.id})">✕</button></li>`;
+    <button class="ghost" onclick="delTask(${t.id})">×</button></li>`;
 }
 function render(){
   greet();
@@ -783,23 +808,23 @@ function render(){
     return `<div class="store-h s-${st.replace(/\s/g,'')}">${st} <span class="n">${items.filter(i=>!i.done).length}</span></div>
       <ul class="list">${sorted.map(s=>
       `<li class="${s.done?'done':''}"><span class="ck" onclick="toggleShop(${s.id})">✓</span>
-      <span class="ttl">${esc(s.item)}${s.by?` <span class="by">· ${esc(s.by)}</span>`:''}</span>
-      <button class="ghost" onclick="delShop(${s.id})">✕</button></li>`).join('')}</ul>`;
+      <span class="ttl">${esc(s.item)} ${avatar(s.by)}</span>
+      <button class="ghost" onclick="delShop(${s.id})">×</button></li>`).join('')}</ul>`;
   }).join('')||'<div class="empty">Shopping list is empty — nice.</div>';
 
   el('f-budget').value=S.budget;
   el('f-rows').innerHTML=S.exp.slice(0,30).map(e=>
-    `<tr><td>${e.date}</td><td>${esc(e.cat)}</td><td>${esc(e.note)}</td><td class="by">${esc(e.by||'')}</td><td class="amt">${fmt(e.amt)}</td>
-    <td><button class="ghost" onclick="delExp(${e.id})">✕</button></td></tr>`).join('')||'<tr><td colspan="6" class="empty">No expenses logged.</td></tr>';
+    `<tr><td>${e.date}</td><td>${esc(e.cat)}</td><td>${esc(e.note)}</td><td class="by">${avatar(e.by)}</td><td class="amt">${fmt(e.amt)}</td>
+    <td><button class="ghost" onclick="delExp(${e.id})">×</button></td></tr>`).join('')||'<tr><td colspan="6" class="empty">No expenses logged.</td></tr>';
 
   el('pr-list').innerHTML=S.proj.map(p=>
     `<div class="proj"><div class="row"><b>${esc(p.name)}</b>
     <span><span class="pill st-${p.st}" style="cursor:pointer" onclick="cycleProj(${p.id})">${p.st}</span>
-    <button class="ghost" onclick="delProj(${p.id})">✕</button></span></div>
+    <button class="ghost" onclick="delProj(${p.id})">×</button></span></div>
     ${p.next?`<div class="next">Next: ${esc(p.next)}</div>`:''}</div>`).join('')||'<div class="empty">No projects yet.</div>';
 
   el('n-list').innerHTML=S.notes.map(n=>
-    `<div class="note">${esc(n.text)}<div class="d">${n.date}${n.by?' · '+esc(n.by):''}</div><button class="ghost" onclick="delNote(${n.id})">✕</button></div>`).join('')||'<div class="empty">No notes yet.</div>';
+    `<div class="note">${esc(n.text)}<div class="d">${n.date} ${avatar(n.by)}</div><button class="ghost" onclick="delNote(${n.id})">×</button></div>`).join('')||'<div class="empty">No notes yet.</div>';
 
   renderIdeas();
   if(el('v-cal').classList.contains('active'))renderCal();

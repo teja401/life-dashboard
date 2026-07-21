@@ -3,8 +3,8 @@
   "short_name": "Dashboard",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#F4F2FB",
-  "theme_color": "#6D5AE6",
+  "background_color": "#FAF5EE",
+  "theme_color": "#5B4FC7",
   "icons": [
     { "src": "icon-180.png", "sizes": "180x180", "type": "image/png" },
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
